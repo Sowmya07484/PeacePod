@@ -4,8 +4,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import CryptoJS from 'crypto-js';
 
-const ENCRYPTION_KEY = 'reflect-well-secret-key';
-const LOCAL_STORAGE_KEY = 'reflect-well-encryption-status';
+const ENCRYPTION_KEY = 'peace-pod-secret-key';
+const LOCAL_STORAGE_KEY = 'peace-pod-encryption-status';
 
 export function useEncryption() {
   const [isEncrypted, setIsEncrypted] = useState(false);

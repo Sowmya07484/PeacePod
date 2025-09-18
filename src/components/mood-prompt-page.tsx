@@ -19,11 +19,11 @@ const moodIcons: Record<Mood, React.ReactNode> = {
 };
 
 const moodReactions: Record<Mood, {icon: React.ReactNode, message: string}> = {
-    laugh: { icon: <Laugh className="h-24 w-24 text-yellow-500" />, message: "It's great to see you so happy!" },
-    smile: { icon: <Smile className="h-24 w-24 text-green-500" />, message: "Glad you're having a good day!" },
-    meh: { icon: <Meh className="h-24 w-24 text-gray-500" />, message: "Just a regular day, huh? That's okay." },
-    frown: { icon: <Frown className="h-24 w-24 text-blue-500" />, message: "Sorry to hear you're feeling down." },
-    sad: { icon: <Angry className="h-24 w-24 text-red-500" />, message: "It's okay to feel sad sometimes." },
+    laugh: { icon: <Laugh className="h-24 w-24 text-[hsl(var(--chart-3))]" />, message: "It's great to see you so happy!" },
+    smile: { icon: <Smile className="h-24 w-24 text-[hsl(var(--chart-4))]" />, message: "Glad you're having a good day!" },
+    meh: { icon: <Meh className="h-24 w-24 text-muted-foreground" />, message: "Just a regular day, huh? That's okay." },
+    frown: { icon: <Frown className="h-24 w-24 text-[hsl(var(--chart-1))]" />, message: "Sorry to hear you're feeling down." },
+    sad: { icon: <Angry className="h-24 w-24 text-destructive" />, message: "It's okay to feel sad sometimes." },
 };
 
 interface MoodPromptPageProps {
@@ -70,7 +70,7 @@ export default function MoodPromptPage({ onMoodSelect }: MoodPromptPageProps) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-200 via-pink-200 to-red-200 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-green-200 via-teal-200 to-emerald-200 p-4">
       <Card className="w-full max-w-md shadow-2xl text-center transition-all duration-500">
         <CardHeader>
           <CardTitle className="text-3xl font-headline">

@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'ReflectWell',
+  title: 'PeacePod',
   description: 'Your personal wellness journal.',
 };
 
