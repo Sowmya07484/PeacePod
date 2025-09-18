@@ -53,6 +53,17 @@ export default function Dashboard({ initialMood }: DashboardProps) {
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const { isEncrypted, encrypt, decrypt } = useEncryption();
 
+  useEffect(() => {
+    // This is a mock-up to simulate loading a single entry.
+    const mockEntry = {
+      mood: 'smile',
+      text: "Today was a good day! I went for a walk in the park and enjoyed the sunshine. Feeling grateful.",
+      date: new Date(Date.now() - 86400000 * 2), // 2 days ago
+      isEncrypted: false,
+    };
+    setJournalEntries([mockEntry]);
+  }, []);
+
   const handleSaveEntry = (mood: string, text: string) => {
     let newEntry: JournalEntry;
     if (isEncrypted) {
@@ -67,7 +78,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
   };
   
   const getDecryptedEntry = (entry: JournalEntry) => {
-    if (entry.isEncrypted) {
+    if (entry.isEncrypted && entry.text) {
         try {
             const decryptedText = decrypt(entry.text);
             return decryptedText;
