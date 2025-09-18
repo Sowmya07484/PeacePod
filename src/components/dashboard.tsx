@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -27,8 +27,8 @@ interface DashboardProps {
     initialMood: string;
 }
 
-const FeatureCard = ({ icon, title, description, children }: { icon: React.ReactNode, title: string, description: string, children: React.ReactNode }) => (
-  <Dialog>
+const FeatureCard = ({ icon, title, description, children, onOpen }: { icon: React.ReactNode, title: string, description: string, children: React.ReactNode, onOpen?: () => void }) => (
+  <Dialog onOpenChange={(open) => open && onOpen && onOpen()}>
     <DialogTrigger asChild>
       <Card className="cursor-pointer hover:shadow-lg transition-shadow">
         <CardHeader className="flex flex-row items-center gap-4">
@@ -62,7 +62,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
     }
     
     setJournalEntries(prev => [newEntry, ...prev]);
-    setJournalText(''); // Clear text area after saving
+    // We don't clear journalText here anymore, to allow continuation.
   };
   
   const getDecryptedEntry = (entry: JournalEntry) => {
@@ -77,8 +77,16 @@ export default function Dashboard({ initialMood }: DashboardProps) {
     }
     return entry.text;
   };
+  
+  const handleJournalOpen = () => {
+    if (journalEntries.length > 0) {
+      setJournalText(getDecryptedEntry(journalEntries[0]));
+    } else {
+      setJournalText('');
+    }
+  }
 
-  const latestJournalText = journalText || (journalEntries[0] ? getDecryptedEntry(journalEntries[0]) : '');
+  const latestJournalTextForNudge = journalEntries.length > 0 ? getDecryptedEntry(journalEntries[0]) : '';
   
   return (
     <div className="flex flex-col gap-6">
@@ -90,12 +98,14 @@ export default function Dashboard({ initialMood }: DashboardProps) {
           icon={<PenSquare className="h-8 w-8 text-primary" />}
           title="Write Journal"
           description="Let out your thoughts for the day."
+          onOpen={handleJournalOpen}
         >
           <MoodEntry 
             journalText={journalText} 
             setJournalText={setJournalText} 
             onSave={handleSaveEntry}
             initialMood={initialMood}
+            hasPreviousEntry={journalEntries.length > 0}
           />
         </FeatureCard>
 
@@ -113,7 +123,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
           description="AI-powered motivational quotes."
         >
           <MotivationalNudges 
-            recentEntry={latestJournalText} 
+            recentEntry={latestJournalTextForNudge} 
             mood={initialMood}
           />
         </FeatureCard>

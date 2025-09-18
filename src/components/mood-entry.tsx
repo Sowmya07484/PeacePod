@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Frown, Laugh, Meh, Smile, Angry } from "lucide-react";
+import { Frown, Laugh, Meh, Smile, Angry, FilePlus2, Eraser } from "lucide-react";
 
 type Mood = 'laugh' | 'smile' | 'meh' | 'frown' | 'sad';
 
@@ -29,14 +29,19 @@ interface MoodEntryProps {
   setJournalText: (text: string) => void;
   onSave: (mood: Mood, text: string) => void;
   initialMood: string;
+  hasPreviousEntry: boolean;
 }
 
-export default function MoodEntry({ journalText, setJournalText, onSave, initialMood }: MoodEntryProps) {
+export default function MoodEntry({ journalText, setJournalText, onSave, initialMood, hasPreviousEntry }: MoodEntryProps) {
   const selectedMood = initialMood as Mood;
 
   const handleSave = () => {
     onSave(selectedMood, journalText);
   };
+
+  const handleClear = () => {
+    setJournalText('');
+  }
   
   return (
     <Card className="border-0 shadow-none">
@@ -50,6 +55,11 @@ export default function MoodEntry({ journalText, setJournalText, onSave, initial
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        {hasPreviousEntry && !journalText && (
+          <div className="text-center text-muted-foreground p-4 border rounded-md">
+            <p>Your previous entry is saved. You can clear it to start a new one.</p>
+          </div>
+        )}
         <Textarea
           placeholder="Start writing your thoughts here..."
           className="min-h-[200px] resize-none"
@@ -57,8 +67,17 @@ export default function MoodEntry({ journalText, setJournalText, onSave, initial
           onChange={(e) => setJournalText(e.target.value)}
         />
       </CardContent>
-      <CardFooter>
-        <Button onClick={handleSave} className="ml-auto">Save Entry</Button>
+      <CardFooter className="justify-end space-x-2">
+        {hasPreviousEntry && (
+          <Button onClick={handleClear} variant="outline">
+            <Eraser className="mr-2 h-4 w-4" />
+            Start New
+          </Button>
+        )}
+        <Button onClick={handleSave}>
+          <FilePlus2 className="mr-2 h-4 w-4" />
+          Save Entry
+        </Button>
       </CardFooter>
     </Card>
   );
