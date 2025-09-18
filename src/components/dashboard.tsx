@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { PenSquare, LineChart, Mic, Sparkles, Settings, Bell, History } from "lucide-react";
+import { PenSquare, LineChart, Mic, Sparkles, Settings, Bell, History, AudioLines } from "lucide-react";
 
 import AudioJournal from './audio-journal';
 import MoodAnalytics from './mood-analytics';
@@ -16,12 +16,18 @@ import WelcomeHeader from './welcome-header';
 import { useEncryption } from '@/hooks/use-encryption';
 import ReminderSettings from './reminder-settings';
 import JournalHistory from './journal-history';
+import VoiceNoteHistory from './voice-note-history';
 
 type JournalEntry = {
   mood: string;
   text: string;
   date: Date;
   isEncrypted?: boolean;
+};
+
+type SavedNote = {
+  url: string;
+  date: Date;
 };
 
 interface DashboardProps {
@@ -51,6 +57,7 @@ const FeatureCard = ({ icon, title, description, children, onOpen }: { icon: Rea
 export default function Dashboard({ initialMood }: DashboardProps) {
   const [journalText, setJournalText] = useState('');
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [savedNotes, setSavedNotes] = useState<SavedNote[]>([]);
   const { isEncrypted, encrypt, decrypt } = useEncryption();
 
   useEffect(() => {
@@ -62,6 +69,11 @@ export default function Dashboard({ initialMood }: DashboardProps) {
       isEncrypted: false,
     };
     setJournalEntries([mockEntry]);
+    
+    // Clean up audio object URLs when component unmounts
+    return () => {
+      savedNotes.forEach(note => URL.revokeObjectURL(note.url));
+    };
   }, []);
 
   const handleSaveEntry = (mood: string, text: string) => {
@@ -75,6 +87,16 @@ export default function Dashboard({ initialMood }: DashboardProps) {
     
     setJournalEntries(prev => [newEntry, ...prev]);
     // We don't clear journalText here anymore, to allow continuation.
+  };
+
+  const handleSaveNote = (note: SavedNote) => {
+    setSavedNotes(prev => [note, ...prev]);
+  };
+
+  const handleDeleteNote = (index: number) => {
+    const noteToDelete = savedNotes[index];
+    URL.revokeObjectURL(noteToDelete.url);
+    setSavedNotes(prev => prev.filter((_, i) => i !== index));
   };
   
   const getDecryptedEntry = (entry: JournalEntry) => {
@@ -150,10 +172,18 @@ export default function Dashboard({ initialMood }: DashboardProps) {
 
         <FeatureCard
           icon={<Mic className="h-8 w-8 text-primary" />}
-          title="Voice Notes"
-          description="Record & review voice notes."
+          title="Record Voice Note"
+          description="Record your thoughts out loud."
         >
-            <AudioJournal />
+            <AudioJournal onSave={handleSaveNote} />
+        </FeatureCard>
+
+        <FeatureCard
+          icon={<AudioLines className="h-8 w-8 text-primary" />}
+          title="Voice Notes History"
+          description="Listen to your past recordings."
+        >
+          <VoiceNoteHistory notes={savedNotes} onDelete={handleDeleteNote} />
         </FeatureCard>
         
         <FeatureCard

@@ -4,9 +4,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Mic, Square, Save, Trash2, History } from "lucide-react";
+import { Mic, Square, Save } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { SavedNotePlayer } from './saved-note-player';
 
 type SavedNote = {
@@ -14,11 +13,14 @@ type SavedNote = {
   date: Date;
 }
 
-export default function AudioJournal() {
+interface AudioJournalProps {
+  onSave: (note: SavedNote) => void;
+}
+
+export default function AudioJournal({ onSave }: AudioJournalProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [savedNotes, setSavedNotes] = useState<SavedNote[]>([]);
   
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -48,9 +50,8 @@ export default function AudioJournal() {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
-      savedNotes.forEach(note => URL.revokeObjectURL(note.url));
     };
-  }, [audioUrl, savedNotes]);
+  }, [audioUrl]);
 
   const handleStartRecording = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -112,7 +113,7 @@ export default function AudioJournal() {
 
   const handleSave = () => {
     if (audioUrl) {
-      setSavedNotes(prev => [{ url: audioUrl, date: new Date() }, ...prev]);
+      onSave({ url: audioUrl, date: new Date() });
       setAudioUrl(null); // Clear the current recording from player
       setElapsedTime(0);
       toast({
@@ -121,16 +122,6 @@ export default function AudioJournal() {
       });
     }
   }
-
-  const handleDelete = (index: number) => {
-    const noteToDelete = savedNotes[index];
-    URL.revokeObjectURL(noteToDelete.url);
-    setSavedNotes(prev => prev.filter((_, i) => i !== index));
-    toast({
-      title: "Note Deleted",
-      description: "The voice note has been removed.",
-    });
-  };
   
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -169,30 +160,6 @@ export default function AudioJournal() {
             <Save className="mr-2 h-5 w-5" />
             Save Recording
           </Button>
-        )}
-        
-        {savedNotes.length > 0 && (
-          <div className="w-full space-y-4 pt-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2"><History /> Saved Notes</h3>
-            <ScrollArea className="h-[200px] pr-4">
-              <div className="space-y-4">
-                {savedNotes.map((note, index) => (
-                  <div key={index} className="flex items-center gap-2 rounded-md border p-2">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        {note.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}, {note.date.toLocaleTimeString()}
-                      </p>
-                       <SavedNotePlayer audioUrl={note.url} />
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(index)}>
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete note</span>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
         )}
       </CardFooter>
     </Card>
