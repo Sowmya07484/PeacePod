@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { PenSquare, LineChart, Mic, Sparkles, Settings, Bell } from "lucide-react";
+import { PenSquare, LineChart, Mic, Sparkles, Settings, Bell, History } from "lucide-react";
 
 import AudioJournal from './audio-journal';
 import MoodAnalytics from './mood-analytics';
@@ -15,6 +15,7 @@ import SettingsPanel from './settings-panel';
 import WelcomeHeader from './welcome-header';
 import { useEncryption } from '@/hooks/use-encryption';
 import ReminderSettings from './reminder-settings';
+import JournalHistory from './journal-history';
 
 type JournalEntry = {
   mood: string;
@@ -115,6 +116,14 @@ export default function Dashboard({ initialMood }: DashboardProps) {
           description="Visualize your mood journey."
         >
           <MoodAnalytics entries={journalEntries} />
+        </FeatureCard>
+
+        <FeatureCard
+          icon={<History className="h-8 w-8 text-primary" />}
+          title="Journal History"
+          description="Review your past entries."
+        >
+          <JournalHistory entries={journalEntries} getDecryptedText={getDecryptedEntry} />
         </FeatureCard>
 
         <FeatureCard
