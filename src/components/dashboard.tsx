@@ -126,6 +126,11 @@ export default function Dashboard({ initialMood, user }: DashboardProps) {
     <div className="flex flex-col gap-6">
       <WelcomeHeader name={user.name} entryCount={journalEntries.length} />
 
+      <MotivationalNudges 
+        recentEntry={latestJournalTextForNudge} 
+        mood={initialMood}
+      />
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <FeatureCard 
@@ -157,17 +162,6 @@ export default function Dashboard({ initialMood, user }: DashboardProps) {
           description="Review your past entries."
         >
           <JournalHistory entries={journalEntries} getDecryptedText={getDecryptedEntry} />
-        </FeatureCard>
-
-        <FeatureCard
-          icon={<Sparkles className="h-8 w-8 text-primary" />}
-          title="Get a Nudge"
-          description="AI-powered motivational quotes."
-        >
-          <MotivationalNudges 
-            recentEntry={latestJournalTextForNudge} 
-            mood={initialMood}
-          />
         </FeatureCard>
 
         <FeatureCard

@@ -51,9 +51,9 @@ export default function MotivationalNudges({ recentEntry, mood }: MotivationalNu
   };
 
   return (
-    <Card className="border-0 shadow-none">
+    <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline">Motivational Nudges</CardTitle>
+        <CardTitle className="font-headline flex items-center gap-2"><Sparkles className="h-6 w-6 text-primary"/>Motivational Nudges</CardTitle>
         <CardDescription>A little boost for your day, powered by AI.</CardDescription>
       </CardHeader>
       <CardContent>
