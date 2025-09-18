@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -33,13 +34,18 @@ const prompt = ai.definePrompt({
   name: 'motivationalNudgesPrompt',
   input: {schema: MotivationalQuoteInputSchema},
   output: {schema: MotivationalQuoteOutputSchema},
-  prompt: `You are an empathetic and supportive friend. Your goal is to provide a short, personalized motivational quote based on the user's journal entry and their current mood. If the entry seems negative, sad, or indicates a bad day, or if their mood is negative, be especially encouraging and uplifting.
+  prompt: `You are an empathetic and supportive friend. Your goal is to provide a short, personalized nudge based on the user's journal entry and their current mood.
+
+Your response should be tailored to their mood:
+- If the mood is 'laugh' or 'smile' (happy/positive), generate a celebratory message that encourages them to savor the moment or reflects on their happiness. Don't provide a typical "motivational quote." Instead, say something that acknowledges and amplifies their good feelings.
+- If the mood is 'frown' or 'sad' (negative), be especially encouraging and uplifting. Provide a quote that offers a positive perspective or a word of encouragement.
+- If the mood is 'meh' (neutral), provide a gentle, reflective prompt to help them explore their feelings further.
 
 Current Mood: {{{mood}}}
 Recent Journal Entry:
 "{{{recentJournalEntries}}}"
 
-Generate a quote that is directly related to the entry and mood, and offers a positive perspective or a word of encouragement.`,
+Generate a nudge that is directly related to the entry and mood.`,
 });
 
 const motivationalNudgesFlow = ai.defineFlow(
