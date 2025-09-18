@@ -29,10 +29,10 @@ export default function ReminderSettings() {
   };
 
   const handleSave = () => {
-    // This is a mock save. In a real app, you'd save this to a backend or local storage.
+    // This is a mock save. In a real app, you'd save this to a backend or local storage and schedule notifications.
     toast({
-      title: "Reminders Saved",
-      description: "Your notification preferences have been updated.",
+      title: "Reminders Saved (Demonstration)",
+      description: "Your notification preferences have been updated. Actual notifications are not yet implemented.",
     });
   }
 
@@ -40,7 +40,7 @@ export default function ReminderSettings() {
     <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle className="font-headline flex items-center gap-2"><Bell />Set Journal Reminders</CardTitle>
-        <CardDescription>Stay consistent with gentle nudges to write.</CardDescription>
+        <CardDescription>Stay consistent with gentle nudges to write. Note: This is a UI demonstration; reminders are not yet active.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6 pt-2">
         <div className="flex items-center justify-between rounded-lg border p-4">
@@ -63,13 +63,14 @@ export default function ReminderSettings() {
         {remindersEnabled && (
           <div className="space-y-4 animate-in fade-in-0 duration-500">
             <div className="space-y-2">
-                <Label htmlFor="reminder-time">Reminder Time</Label>
+                <Label htmlFor="reminder-time">Reminder Time (24-hour format)</Label>
                 <Input 
                     id="reminder-time"
                     type="time" 
                     value={reminderTime} 
                     onChange={(e) => setReminderTime(e.target.value)}
                     className="w-full"
+                    pattern="[0-9]{2}:[0-9]{2}"
                 />
             </div>
             <div className="space-y-2">
