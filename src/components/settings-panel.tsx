@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch";
 import { useEncryption } from "@/hooks/use-encryption";
 import { FileText, ShieldCheck } from "lucide-react";
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 type JournalEntry = {
   mood: string;
@@ -31,6 +30,9 @@ export default function SettingsPanel({ entries, getDecryptedText }: SettingsPan
   const handleDownloadPdf = async () => {
     const content = exportContentRef.current;
     if (!content) return;
+
+    // Dynamically import html2canvas
+    const html2canvas = (await import('html2canvas')).default;
 
     // Temporarily make the content visible for capturing
     content.style.position = 'absolute';
@@ -98,7 +100,7 @@ export default function SettingsPanel({ entries, getDecryptedText }: SettingsPan
                 Your journal will be exported as a PDF document.
               </DialogDescription>
             </DialogHeader>
-            <div ref={exportContentRef} className="my-4 h-64 overflow-y-auto rounded-md border p-4 bg-white text-black">
+            <div ref={exportContentRef} className="my-4 h-64 overflow-y-auto rounded-md border p-4 bg-white text-black hidden">
               <h2 className="font-bold text-lg">My PeacePod Journal</h2>
               <p className="text-sm text-gray-500">Generated on {new Date().toLocaleDateString()}</p>
               {entries.map((entry, index) => (
