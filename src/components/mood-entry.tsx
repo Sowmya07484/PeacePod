@@ -4,16 +4,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Annoyed, Frown, Laugh, Meh, Smile } from "lucide-react";
+import { Frown, Laugh, Meh, Smile, Angry } from "lucide-react";
 
-type Mood = 'laugh' | 'smile' | 'meh' | 'frown' | 'annoyed';
+type Mood = 'laugh' | 'smile' | 'meh' | 'frown' | 'sad';
 
 const moodIcons: Record<Mood, React.ReactNode> = {
   laugh: <Laugh className="h-8 w-8 text-[hsl(var(--chart-3))]" />,
   smile: <Smile className="h-8 w-8 text-[hsl(var(--chart-4))]" />,
   meh: <Meh className="h-8 w-8 text-muted-foreground" />,
   frown: <Frown className="h-8 w-8 text-[hsl(var(--chart-1))]" />,
-  annoyed: <Annoyed className="h-8 w-8 text-[hsl(var(--destructive))]" />,
+  sad: <Angry className="h-8 w-8 text-[hsl(var(--destructive))]" />,
 };
 
 const moodDescriptions: Record<Mood, string> = {
@@ -21,7 +21,7 @@ const moodDescriptions: Record<Mood, string> = {
     smile: "You're feeling happy!",
     meh: "You're feeling alright.",
     frown: "You're feeling a bit down.",
-    annoyed: "You're feeling annoyed.",
+    sad: "You're feeling sad.",
 }
 
 interface MoodEntryProps {

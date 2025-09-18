@@ -4,18 +4,18 @@
 import { useState, useTransition, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Annoyed, Frown, Laugh, Meh, Smile, Sparkles } from "lucide-react";
+import { Frown, Laugh, Meh, Smile, Angry, Sparkles } from "lucide-react";
 import { getMotivationalQuote } from "@/app/actions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 
-type Mood = 'laugh' | 'smile' | 'meh' | 'frown' | 'annoyed';
+type Mood = 'laugh' | 'smile' | 'meh' | 'frown' | 'sad';
 
 const moodIcons: Record<Mood, React.ReactNode> = {
   laugh: <Laugh className="h-12 w-12" />,
   smile: <Smile className="h-12 w-12" />,
   meh: <Meh className="h-12 w-12" />,
   frown: <Frown className="h-12 w-12" />,
-  annoyed: <Annoyed className="h-12 w-12" />,
+  sad: <Angry className="h-12 w-12" />,
 };
 
 const moodReactions: Record<Mood, {icon: React.ReactNode, message: string}> = {
@@ -23,7 +23,7 @@ const moodReactions: Record<Mood, {icon: React.ReactNode, message: string}> = {
     smile: { icon: <Smile className="h-24 w-24 text-green-500" />, message: "Glad you're having a good day!" },
     meh: { icon: <Meh className="h-24 w-24 text-gray-500" />, message: "Just a regular day, huh? That's okay." },
     frown: { icon: <Frown className="h-24 w-24 text-blue-500" />, message: "Sorry to hear you're feeling down." },
-    annoyed: { icon: <Annoyed className="h-24 w-24 text-red-500" />, message: "It's okay to feel annoyed sometimes." },
+    sad: { icon: <Angry className="h-24 w-24 text-red-500" />, message: "It's okay to feel sad sometimes." },
 };
 
 interface MoodPromptPageProps {
@@ -44,7 +44,7 @@ export default function MoodPromptPage({ onMoodSelect }: MoodPromptPageProps) {
   useEffect(() => {
     if (selectedMood) {
       const timer = setTimeout(() => {
-        if (selectedMood === 'frown' || selectedMood === 'annoyed') {
+        if (selectedMood === 'frown' || selectedMood === 'sad') {
             startTransition(async () => {
               const { quote } = await getMotivationalQuote("I'm having a bad day.", selectedMood);
               if (quote) {

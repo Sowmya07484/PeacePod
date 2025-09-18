@@ -10,15 +10,15 @@ const moodToValue: Record<string, number> = {
   smile: 4,
   meh: 3,
   frown: 2,
-  annoyed: 1,
+  sad: 1,
 };
 
 const valueToMood: Record<number, string> = {
   5: 'Ecstatic',
   4: 'Happy',
   3: 'Neutral',
-  2: 'Sad',
-  1: 'Annoyed',
+  2: 'Frown',
+  1: 'Sad',
 };
 
 const moodColors: Record<string, string> = {
@@ -26,7 +26,7 @@ const moodColors: Record<string, string> = {
     smile: "hsl(var(--chart-4))", // Green
     meh: "hsl(var(--muted-foreground))", // Gray
     frown: "hsl(var(--chart-1))", // Blue
-    annoyed: "hsl(var(--destructive))", // Red
+    sad: "hsl(var(--destructive))", // Red
 };
 
 interface MoodAnalyticsProps {
@@ -48,7 +48,7 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
     { date: "Thu", moodValue: 5, mood: 'laugh' },
     { date: "Fri", moodValue: 4, mood: 'smile' },
     { date: "Sat", moodValue: 3, mood: 'meh' },
-    { date: "Sun", moodValue: 1, mood: 'annoyed' },
+    { date: "Sun", moodValue: 1, mood: 'sad' },
   ];
 
   const dataToDisplay = chartData.length > 0 ? chartData : placeholderData;
