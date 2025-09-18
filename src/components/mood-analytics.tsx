@@ -4,6 +4,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts";
+import { useEffect, useState } from "react";
 
 const moodToValue: Record<string, number> = {
   laugh: 5,
@@ -34,6 +35,12 @@ interface MoodAnalyticsProps {
 }
 
 export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
+  const [today, setToday] = useState('Today');
+
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString('en-US', { weekday: 'short' }));
+  }, []);
+
   // Use last 7 entries for the chart
   const chartData = entries.slice(0, 7).reverse().map(entry => ({
     date: entry.date.toLocaleDateString('en-US', { weekday: 'short' }),
@@ -42,13 +49,7 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
   }));
   
   const placeholderData = [
-    { date: "Mon", moodValue: 4, mood: 'smile' },
-    { date: "Tue", moodValue: 2, mood: 'frown' },
-    { date: "Wed", moodValue: 3, mood: 'meh' },
-    { date: "Thu", moodValue: 5, mood: 'laugh' },
-    { date: "Fri", moodValue: 4, mood: 'smile' },
-    { date: "Sat", moodValue: 3, mood: 'meh' },
-    { date: "Sun", moodValue: 1, mood: 'sad' },
+    { date: today, moodValue: 4, mood: 'smile' },
   ];
 
   const dataToDisplay = chartData.length > 0 ? chartData : placeholderData;
@@ -66,32 +67,38 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
         <CardDescription>A look at your mood over the last week.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[200px] w-full">
-          <BarChart accessibilityLayer data={dataToDisplay} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-            />
-             <YAxis
-              dataKey="moodValue"
-              domain={[0, 5]}
-              tickLine={false}
-              axisLine={false}
-              tickMargin={10}
-              ticks={[1, 2, 3, 4, 5]}
-              tickFormatter={(value) => valueToMood[value]}
-            />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-            <Bar dataKey="moodValue" radius={4}>
-                {dataToDisplay.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={moodColors[entry.mood]} />
-                ))}
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+        {entries.length === 0 ? (
+          <div className="text-center text-muted-foreground p-8 border rounded-md">
+            <p>Your mood chart will appear here once you make an entry.</p>
+          </div>
+        ) : (
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <BarChart accessibilityLayer data={dataToDisplay} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+              />
+               <YAxis
+                dataKey="moodValue"
+                domain={[0, 5]}
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                ticks={[1, 2, 3, 4, 5]}
+                tickFormatter={(value) => valueToMood[value]}
+              />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+              <Bar dataKey="moodValue" radius={4}>
+                  {dataToDisplay.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={moodColors[entry.mood]} />
+                  ))}
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
