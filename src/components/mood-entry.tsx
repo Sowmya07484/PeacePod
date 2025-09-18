@@ -9,12 +9,20 @@ import { Annoyed, Frown, Laugh, Meh, Smile } from "lucide-react";
 type Mood = 'laugh' | 'smile' | 'meh' | 'frown' | 'annoyed';
 
 const moodIcons: Record<Mood, React.ReactNode> = {
-  laugh: <Laugh className="h-8 w-8" />,
-  smile: <Smile className="h-8 w-8" />,
-  meh: <Meh className="h-8 w-8" />,
-  frown: <Frown className="h-8 w-8" />,
-  annoyed: <Annoyed className="h-8 w-8" />,
+  laugh: <Laugh className="h-8 w-8 text-yellow-500" />,
+  smile: <Smile className="h-8 w-8 text-green-500" />,
+  meh: <Meh className="h-8 w-8 text-gray-500" />,
+  frown: <Frown className="h-8 w-8 text-blue-500" />,
+  annoyed: <Annoyed className="h-8 w-8 text-red-500" />,
 };
+
+const moodDescriptions: Record<Mood, string> = {
+    laugh: "You're feeling ecstatic!",
+    smile: "You're feeling happy!",
+    meh: "You're feeling alright.",
+    frown: "You're feeling a bit down.",
+    annoyed: "You're feeling annoyed.",
+}
 
 interface MoodEntryProps {
   journalText: string;
@@ -24,7 +32,7 @@ interface MoodEntryProps {
 }
 
 export default function MoodEntry({ journalText, setJournalText, onSave, initialMood }: MoodEntryProps) {
-  const [selectedMood, setSelectedMood] = useState<Mood>(initialMood as Mood || 'smile');
+  const selectedMood = initialMood as Mood;
 
   const handleSave = () => {
     onSave(selectedMood, journalText);
@@ -33,24 +41,15 @@ export default function MoodEntry({ journalText, setJournalText, onSave, initial
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Your Journal</CardTitle>
-        <CardDescription>Select your mood and write a journal entry.</CardDescription>
+        <div className="flex items-center gap-4">
+            {moodIcons[selectedMood]}
+            <div>
+                <CardTitle className="font-headline">Your Journal</CardTitle>
+                <CardDescription>{moodDescriptions[selectedMood]}</CardDescription>
+            </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex justify-center space-x-2 sm:space-x-4 rounded-lg bg-secondary/50 p-4">
-          {Object.keys(moodIcons).map((mood) => (
-            <Button
-              key={mood}
-              variant={selectedMood === mood ? 'default' : 'ghost'}
-              size="icon"
-              className={`h-14 w-14 rounded-full transition-transform duration-200 hover:scale-110 ${selectedMood === mood ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
-              onClick={() => setSelectedMood(mood as Mood)}
-              aria-label={`Select mood: ${mood}`}
-            >
-              {moodIcons[mood as Mood]}
-            </Button>
-          ))}
-        </div>
         <Textarea
           placeholder="Start writing your thoughts here..."
           className="min-h-[200px] resize-none"
