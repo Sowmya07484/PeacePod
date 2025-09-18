@@ -1,6 +1,9 @@
 
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Book, Calendar, Star } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface WelcomeHeaderProps {
     name: string;
@@ -8,7 +11,14 @@ interface WelcomeHeaderProps {
 }
 
 export default function WelcomeHeader({ name, entryCount }: WelcomeHeaderProps) {
-    const memberSince = "June 2024"; // Placeholder
+    const [memberSince, setMemberSince] = useState('');
+
+    useEffect(() => {
+        const date = new Date();
+        const month = date.toLocaleString('default', { month: 'long' });
+        const year = date.getFullYear();
+        setMemberSince(`${month} ${year}`);
+    }, []);
 
     return (
         <div className="space-y-2">
@@ -19,7 +29,7 @@ export default function WelcomeHeader({ name, entryCount }: WelcomeHeaderProps) 
                     <CardContent className="flex items-center justify-between p-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Total Entries</p>
-                            <p className="text-2xl font-bold">1</p>
+                            <p className="text-2xl font-bold">{entryCount > 0 ? entryCount : 1}</p>
                         </div>
                         <Book className="h-8 w-8 text-primary" />
                     </CardContent>

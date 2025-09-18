@@ -1,3 +1,4 @@
+
 "use client";
 
 import { getMotivationalQuote } from "@/app/actions";
@@ -49,7 +50,7 @@ export default function MotivationalNudges({ recentEntry }: MotivationalNudgesPr
   };
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle className="font-headline">Motivational Nudges</CardTitle>
         <CardDescription>A little boost for your day, powered by AI.</CardDescription>

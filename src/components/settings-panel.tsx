@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -12,7 +13,7 @@ export default function SettingsPanel() {
   const [isEncrypted, setIsEncrypted] = useState(false);
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle className="font-headline">Privacy & Export</CardTitle>
         <CardDescription>Manage your data and privacy settings.</CardDescription>

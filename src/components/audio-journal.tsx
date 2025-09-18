@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
@@ -49,7 +50,7 @@ export default function AudioJournal() {
   };
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle className="font-headline">Voice Note</CardTitle>
         <CardDescription>Record your thoughts out loud.</CardDescription>

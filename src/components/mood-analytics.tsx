@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -59,7 +60,7 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
   } satisfies ChartConfig;
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle className="font-headline">Your Mood Journey</CardTitle>
         <CardDescription>A look at your mood over the last week.</CardDescription>

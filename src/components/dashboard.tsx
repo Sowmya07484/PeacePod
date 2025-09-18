@@ -1,6 +1,12 @@
+
 "use client";
 
 import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { PenSquare, LineChart, Mic, Sparkles, Settings } from "lucide-react";
+
 import AudioJournal from './audio-journal';
 import MoodAnalytics from './mood-analytics';
 import MoodEntry from './mood-entry';
@@ -18,6 +24,26 @@ interface DashboardProps {
     initialMood: string;
 }
 
+const FeatureCard = ({ icon, title, description, children }: { icon: React.ReactNode, title: string, description: string, children: React.ReactNode }) => (
+  <Dialog>
+    <DialogTrigger asChild>
+      <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+        <CardHeader className="flex flex-row items-center gap-4">
+          {icon}
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+        </CardHeader>
+      </Card>
+    </DialogTrigger>
+    <DialogContent className="sm:max-w-[625px]">
+      {children}
+    </DialogContent>
+  </Dialog>
+);
+
+
 export default function Dashboard({ initialMood }: DashboardProps) {
   const [journalText, setJournalText] = useState('');
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
@@ -31,23 +57,53 @@ export default function Dashboard({ initialMood }: DashboardProps) {
   return (
     <div className="flex flex-col gap-6">
       <WelcomeHeader name="User" entryCount={journalEntries.length} />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 flex flex-col gap-6">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <FeatureCard 
+          icon={<PenSquare className="h-8 w-8 text-primary" />}
+          title="Write Journal"
+          description="Let out your thoughts for the day."
+        >
           <MoodEntry 
             journalText={journalText} 
             setJournalText={setJournalText} 
             onSave={handleSaveEntry}
             initialMood={initialMood}
           />
-        </div>
-        <div className="lg:col-span-1 flex flex-col gap-6">
-          <MotivationalNudges recentEntry={journalText || (journalEntries[0]?.text || '')} />
-        </div>
-      </div>
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </FeatureCard>
+
+        <FeatureCard
+          icon={<LineChart className="h-8 w-8 text-primary" />}
+          title="Mood Analytics"
+          description="Visualize your mood journey."
+        >
           <MoodAnalytics entries={journalEntries} />
-          <AudioJournal />
+        </FeatureCard>
+
+        <FeatureCard
+          icon={<Sparkles className="h-8 w-8 text-primary" />}
+          title="Get a Nudge"
+          description="AI-powered motivational quotes."
+        >
+          <MotivationalNudges recentEntry={journalText || (journalEntries[0]?.text || '')} />
+        </FeatureCard>
+
+        <FeatureCard
+          icon={<Mic className="h-8 w-8 text-primary" />}
+          title="Voice Note"
+          description="Record your thoughts out loud."
+        >
+            <AudioJournal />
+        </FeatureCard>
+        
+        <FeatureCard
+          icon={<Settings className="h-8 w-8 text-primary" />}
+          title="Settings & Export"
+          description="Manage your data and privacy."
+        >
           <SettingsPanel />
+        </FeatureCard>
       </div>
     </div>
   );

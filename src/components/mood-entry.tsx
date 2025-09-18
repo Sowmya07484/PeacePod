@@ -1,6 +1,6 @@
+
 "use client";
 
-import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,7 +39,7 @@ export default function MoodEntry({ journalText, setJournalText, onSave, initial
   };
   
   return (
-    <Card>
+    <Card className="border-0 shadow-none">
       <CardHeader>
         <div className="flex items-center gap-4">
             {moodIcons[selectedMood]}
