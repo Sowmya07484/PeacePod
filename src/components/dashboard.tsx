@@ -18,7 +18,7 @@ import ReminderSettings from './reminder-settings';
 import JournalHistory from './journal-history';
 import VoiceNoteHistory from './voice-note-history';
 
-type JournalEntry = {
+export type JournalEntry = {
   mood: string;
   text: string;
   date: Date;
@@ -124,7 +124,7 @@ export default function Dashboard({ initialMood, user }: DashboardProps) {
   
   return (
     <div className="flex flex-col gap-6">
-      <WelcomeHeader name={user.name} entryCount={journalEntries.length} />
+      <WelcomeHeader name={user.name} journalEntries={journalEntries} />
 
       <MotivationalNudges 
         recentEntry={latestJournalTextForNudge} 
