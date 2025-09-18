@@ -58,7 +58,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
     const mockEntry = {
       mood: 'smile',
       text: "Today was a good day! I went for a walk in the park and enjoyed the sunshine. Feeling grateful.",
-      date: new Date(Date.now() - 86400000 * 2), // 2 days ago
+      date: new Date(), // Set to today
       isEncrypted: false,
     };
     setJournalEntries([mockEntry]);
@@ -150,8 +150,8 @@ export default function Dashboard({ initialMood }: DashboardProps) {
 
         <FeatureCard
           icon={<Mic className="h-8 w-8 text-primary" />}
-          title="Voice Note"
-          description="Record your thoughts out loud."
+          title="Voice Notes"
+          description="Record & review voice notes."
         >
             <AudioJournal />
         </FeatureCard>
