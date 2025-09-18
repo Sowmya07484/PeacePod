@@ -30,8 +30,17 @@ type SavedNote = {
   date: Date;
 };
 
+type User = {
+  name: string;
+  age: number;
+  guardianEmail?: string;
+  guardianPhone?: string;
+  guardianOccupation?: string;
+};
+
 interface DashboardProps {
     initialMood: string;
+    user: User;
 }
 
 const FeatureCard = ({ icon, title, description, children, onOpen }: { icon: React.ReactNode, title: string, description: string, children: React.ReactNode, onOpen?: () => void }) => (
@@ -54,7 +63,7 @@ const FeatureCard = ({ icon, title, description, children, onOpen }: { icon: Rea
 );
 
 
-export default function Dashboard({ initialMood }: DashboardProps) {
+export default function Dashboard({ initialMood, user }: DashboardProps) {
   const [journalText, setJournalText] = useState('');
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [savedNotes, setSavedNotes] = useState<SavedNote[]>([]);
@@ -115,7 +124,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
   
   return (
     <div className="flex flex-col gap-6">
-      <WelcomeHeader name="User" entryCount={journalEntries.length} />
+      <WelcomeHeader name={user.name} entryCount={journalEntries.length} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
