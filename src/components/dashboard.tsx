@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { PenSquare, LineChart, Mic, Sparkles, Settings } from "lucide-react";
+import { PenSquare, LineChart, Mic, Sparkles, Settings, Bell } from "lucide-react";
 
 import AudioJournal from './audio-journal';
 import MoodAnalytics from './mood-analytics';
@@ -14,6 +14,7 @@ import MotivationalNudges from './motivational-nudges';
 import SettingsPanel from './settings-panel';
 import WelcomeHeader from './welcome-header';
 import { useEncryption } from '@/hooks/use-encryption';
+import ReminderSettings from './reminder-settings';
 
 type JournalEntry = {
   mood: string;
@@ -125,6 +126,14 @@ export default function Dashboard({ initialMood }: DashboardProps) {
             <AudioJournal />
         </FeatureCard>
         
+        <FeatureCard
+          icon={<Bell className="h-8 w-8 text-primary" />}
+          title="Reminders"
+          description="Set notifications for journaling."
+        >
+          <ReminderSettings />
+        </FeatureCard>
+
         <FeatureCard
           icon={<Settings className="h-8 w-8 text-primary" />}
           title="Settings & Export"
