@@ -18,36 +18,21 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [moodSelected, setMoodSelected] = useState(false);
   const [initialMood, setInitialMood] = useState<string | null>(null);
-  const [appLoaded, setAppLoaded] = useState(false);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('reflectwell-user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setAppLoaded(true);
-  }, []);
-
+  
   const handleLogin = (details: Omit<User, 'name' | 'age'> & {name: string; age: number}) => {
     const newUser: User = { ...details };
     setUser(newUser);
-    localStorage.setItem('reflectwell-user', JSON.stringify(newUser));
   };
   
   const handleLogout = () => {
     setUser(null);
     setMoodSelected(false);
     setInitialMood(null);
-    localStorage.removeItem('reflectwell-user');
   }
 
   const handleMoodSelect = (mood: string) => {
     setInitialMood(mood);
     setMoodSelected(true);
-  }
-
-  if (!appLoaded) {
-    return null; // Or a loading spinner
   }
 
   if (!user) {
