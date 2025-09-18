@@ -8,6 +8,9 @@ import LoginPage from '@/components/login-page';
 type User = {
   name: string;
   age: number;
+  guardianEmail?: string;
+  guardianPhone?: string;
+  guardianOccupation?: string;
 };
 
 export default function Home() {
@@ -20,8 +23,8 @@ export default function Home() {
     }
   }, []);
 
-  const handleLogin = (name: string, age: number) => {
-    const newUser = { name, age };
+  const handleLogin = (details: Omit<User, 'name' | 'age'> & {name: string; age: number}) => {
+    const newUser: User = { ...details };
     setUser(newUser);
     localStorage.setItem('reflectwell-user', JSON.stringify(newUser));
   };

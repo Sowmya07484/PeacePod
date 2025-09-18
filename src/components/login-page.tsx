@@ -7,16 +7,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface LoginPageProps {
-  onLogin: (name: string, age: number) => void;
+  onLogin: (details: {
+    name: string;
+    age: number;
+    guardianEmail?: string;
+    guardianPhone?: string;
+    guardianOccupation?: string;
+  }) => void;
 }
 
 export default function LoginPage({ onLogin }: LoginPageProps) {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
+  const [guardianEmail, setGuardianEmail] = useState('');
+  const [guardianPhone, setGuardianPhone] = useState('');
+  const [guardianOccupation, setGuardianOccupation] = useState('');
   const [error, setError] = useState('');
 
+  const ageNumber = parseInt(age, 10);
+  const isUnder18 = age && !isNaN(ageNumber) && ageNumber > 0 && ageNumber < 18;
+
   const handleLogin = () => {
-    const ageNumber = parseInt(age, 10);
     if (!name.trim()) {
       setError('Please enter your name.');
       return;
@@ -25,13 +36,37 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       setError('Please enter a valid age.');
       return;
     }
+
+    const loginDetails: Parameters<LoginPageProps['onLogin']>[0] = {
+      name,
+      age: ageNumber,
+    };
+
+    if (isUnder18) {
+      if (!guardianEmail.trim() || !guardianEmail.includes('@')) {
+        setError('Please enter a valid guardian email.');
+        return;
+      }
+      if (!guardianPhone.trim()) {
+        setError('Please enter a guardian phone number.');
+        return;
+      }
+      if (!guardianOccupation.trim()) {
+        setError('Please enter what your guardian does.');
+        return;
+      }
+      loginDetails.guardianEmail = guardianEmail;
+      loginDetails.guardianPhone = guardianPhone;
+      loginDetails.guardianOccupation = guardianOccupation;
+    }
+
     setError('');
-    onLogin(name, ageNumber);
+    onLogin(loginDetails);
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-sm">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 p-4">
+      <Card className="w-full max-w-sm shadow-2xl">
         <CardHeader>
           <div className="flex items-center justify-center gap-2 mb-4">
             <svg
@@ -64,10 +99,26 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
             <Label htmlFor="age">Age</Label>
             <Input id="age" type="number" placeholder="Enter your age" value={age} onChange={(e) => setAge(e.target.value)} />
           </div>
+          {isUnder18 && (
+            <>
+              <div className="space-y-2 pt-2 border-t mt-4">
+                 <Label htmlFor="guardianEmail">Guardian's Email</Label>
+                 <Input id="guardianEmail" type="email" placeholder="Enter guardian's email" value={guardianEmail} onChange={(e) => setGuardianEmail(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guardianPhone">Guardian's Phone</Label>
+                <Input id="guardianPhone" type="tel" placeholder="Enter guardian's phone number" value={guardianPhone} onChange={(e) => setGuardianPhone(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guardianOccupation">What does your guardian do?</Label>
+                <Input id="guardianOccupation" placeholder="Enter guardian's occupation" value={guardianOccupation} onChange={(e) => setGuardianOccupation(e.target.value)} />
+              </div>
+            </>
+          )}
           {error && <p className="text-sm text-destructive">{error}</p>}
         </CardContent>
         <CardFooter>
-          <Button className="w-full" onClick={handleLogin}>Continue</Button>
+          <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleLogin}>Continue</Button>
         </CardFooter>
       </Card>
     </div>
