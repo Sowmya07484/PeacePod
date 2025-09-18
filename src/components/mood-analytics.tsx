@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts";
 
 const moodToValue: Record<string, number> = {
   laugh: 5,
@@ -20,6 +20,14 @@ const valueToMood: Record<number, string> = {
   1: 'Annoyed',
 };
 
+const moodColors: Record<string, string> = {
+    laugh: "hsl(var(--chart-3))", // Yellow
+    smile: "hsl(var(--chart-4))", // Green
+    meh: "hsl(var(--muted-foreground))", // Gray
+    frown: "hsl(var(--chart-1))", // Blue
+    annoyed: "hsl(var(--destructive))", // Red
+};
+
 interface MoodAnalyticsProps {
   entries: { mood: string, date: Date }[];
 }
@@ -28,17 +36,18 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
   // Use last 7 entries for the chart
   const chartData = entries.slice(0, 7).reverse().map(entry => ({
     date: entry.date.toLocaleDateString('en-US', { weekday: 'short' }),
-    mood: moodToValue[entry.mood],
+    moodValue: moodToValue[entry.mood],
+    mood: entry.mood,
   }));
   
   const placeholderData = [
-    { date: "Mon", mood: 4 },
-    { date: "Tue", mood: 2 },
-    { date: "Wed", mood: 3 },
-    { date: "Thu", mood: 5 },
-    { date: "Fri", mood: 4 },
-    { date: "Sat", mood: 3 },
-    { date: "Sun", mood: 2 },
+    { date: "Mon", moodValue: 4, mood: 'smile' },
+    { date: "Tue", moodValue: 2, mood: 'frown' },
+    { date: "Wed", moodValue: 3, mood: 'meh' },
+    { date: "Thu", moodValue: 5, mood: 'laugh' },
+    { date: "Fri", moodValue: 4, mood: 'smile' },
+    { date: "Sat", moodValue: 3, mood: 'meh' },
+    { date: "Sun", moodValue: 1, mood: 'annoyed' },
   ];
 
   const dataToDisplay = chartData.length > 0 ? chartData : placeholderData;
@@ -46,7 +55,6 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
   const chartConfig = {
     mood: {
       label: "Mood",
-      color: "hsl(var(--primary))",
     },
   } satisfies ChartConfig;
 
@@ -67,6 +75,7 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
               axisLine={false}
             />
              <YAxis
+              dataKey="moodValue"
               domain={[0, 5]}
               tickLine={false}
               axisLine={false}
@@ -75,7 +84,11 @@ export default function MoodAnalytics({ entries }: MoodAnalyticsProps) {
               tickFormatter={(value) => valueToMood[value]}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-            <Bar dataKey="mood" fill="var(--color-mood)" radius={4} />
+            <Bar dataKey="moodValue" radius={4}>
+                {dataToDisplay.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={moodColors[entry.mood]} />
+                ))}
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
