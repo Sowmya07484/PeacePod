@@ -61,20 +61,11 @@ export default function Dashboard({ initialMood }: DashboardProps) {
   const { isEncrypted, encrypt, decrypt } = useEncryption();
 
   useEffect(() => {
-    // This is a mock-up to simulate loading a single entry.
-    const mockEntry = {
-      mood: 'smile',
-      text: "Today was a good day! I went for a walk in the park and enjoyed the sunshine. Feeling grateful.",
-      date: new Date(), // Set to today
-      isEncrypted: false,
-    };
-    setJournalEntries([mockEntry]);
-    
     // Clean up audio object URLs when component unmounts
     return () => {
       savedNotes.forEach(note => URL.revokeObjectURL(note.url));
     };
-  }, []);
+  }, [savedNotes]);
 
   const handleSaveEntry = (mood: string, text: string) => {
     let newEntry: JournalEntry;

@@ -29,7 +29,7 @@ export default function WelcomeHeader({ name, entryCount }: WelcomeHeaderProps) 
                     <CardContent className="flex items-center justify-between p-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Total Entries</p>
-                            <p className="text-2xl font-bold">{entryCount > 0 ? entryCount : 1}</p>
+                            <p className="text-2xl font-bold">{entryCount}</p>
                         </div>
                         <Book className="h-8 w-8 text-primary" />
                     </CardContent>
@@ -38,7 +38,7 @@ export default function WelcomeHeader({ name, entryCount }: WelcomeHeaderProps) 
                     <CardContent className="flex items-center justify-between p-4">
                          <div>
                             <p className="text-sm font-medium text-muted-foreground">Journaling Streak</p>
-                            <p className="text-2xl font-bold">1 Day</p>
+                            <p className="text-2xl font-bold">0 Days</p>
                         </div>
                         <Star className="h-8 w-8 text-yellow-500" />
                     </CardContent>
