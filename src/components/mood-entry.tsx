@@ -20,10 +20,11 @@ interface MoodEntryProps {
   journalText: string;
   setJournalText: (text: string) => void;
   onSave: (mood: Mood, text: string) => void;
+  initialMood: string;
 }
 
-export default function MoodEntry({ journalText, setJournalText, onSave }: MoodEntryProps) {
-  const [selectedMood, setSelectedMood] = useState<Mood>('smile');
+export default function MoodEntry({ journalText, setJournalText, onSave, initialMood }: MoodEntryProps) {
+  const [selectedMood, setSelectedMood] = useState<Mood>(initialMood as Mood || 'smile');
 
   const handleSave = () => {
     onSave(selectedMood, journalText);
@@ -32,7 +33,7 @@ export default function MoodEntry({ journalText, setJournalText, onSave }: MoodE
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">How are you feeling today?</CardTitle>
+        <CardTitle className="font-headline">Your Journal</CardTitle>
         <CardDescription>Select your mood and write a journal entry.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

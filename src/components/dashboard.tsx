@@ -13,7 +13,11 @@ type JournalEntry = {
   date: Date;
 };
 
-export default function Dashboard() {
+interface DashboardProps {
+    initialMood: string;
+}
+
+export default function Dashboard({ initialMood }: DashboardProps) {
   const [journalText, setJournalText] = useState('');
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
 
@@ -29,7 +33,8 @@ export default function Dashboard() {
         <MoodEntry 
           journalText={journalText} 
           setJournalText={setJournalText} 
-          onSave={handleSaveEntry} 
+          onSave={handleSaveEntry}
+          initialMood={initialMood}
         />
         <MotivationalNudges recentEntry={journalText || (journalEntries[0]?.text || '')} />
       </div>
