@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -13,12 +13,102 @@ import { cn } from '@/lib/utils';
 
 const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const dayLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const LOCAL_STORAGE_KEY_REMINDERS = 'peace-pod-reminders';
+
+type ReminderSettings = {
+  enabled: boolean;
+  time: string;
+  days: number[];
+};
 
 export default function ReminderSettings() {
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [reminderTime, setReminderTime] = useState('19:00');
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [notificationPermission, setNotificationPermission] = useState('default');
   const { toast } = useToast();
+
+  useEffect(() => {
+    if ("Notification" in window) {
+      setNotificationPermission(Notification.permission);
+    }
+
+    try {
+      const storedSettings = localStorage.getItem(LOCAL_STORAGE_KEY_REMINDERS);
+      if (storedSettings) {
+        const { enabled, time, days } = JSON.parse(storedSettings) as ReminderSettings;
+        setRemindersEnabled(enabled);
+        setReminderTime(time);
+        setSelectedDays(days);
+      }
+    } catch (error) {
+      console.error("Failed to load reminders from local storage", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (remindersEnabled && notificationPermission === 'granted') {
+      const interval = setInterval(() => {
+        const now = new Date();
+        const currentDay = now.getDay();
+        const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const storedSettings = localStorage.getItem(LOCAL_STORAGE_KEY_REMINDERS);
+        if (storedSettings) {
+          const { enabled, time, days } = JSON.parse(storedSettings) as ReminderSettings;
+          if (enabled && days.includes(currentDay) && time === currentTime) {
+            new Notification("Time to Journal!", {
+              body: "Take a moment for yourself and write down your thoughts.",
+              icon: "/logo.svg", // Assuming you have a logo in public folder
+            });
+          }
+        }
+      }, 60000); // Check every minute
+
+      return () => clearInterval(interval);
+    }
+  }, [remindersEnabled, notificationPermission]);
+
+  const handleToggleReminders = async (enabled: boolean) => {
+    if (enabled) {
+      if (!("Notification" in window)) {
+        toast({
+          variant: "destructive",
+          title: "Notifications not supported",
+          description: "Your browser does not support desktop notifications.",
+        });
+        setRemindersEnabled(false);
+        return;
+      }
+
+      if (notificationPermission === 'granted') {
+        setRemindersEnabled(true);
+      } else if (notificationPermission !== 'denied') {
+        const permission = await Notification.requestPermission();
+        setNotificationPermission(permission);
+        if (permission === 'granted') {
+          setRemindersEnabled(true);
+        } else {
+          setRemindersEnabled(false);
+          toast({
+            variant: "destructive",
+            title: "Notifications Disabled",
+            description: "You need to grant permission to enable reminders.",
+          });
+        }
+      } else {
+         toast({
+            variant: "destructive",
+            title: "Notifications Blocked",
+            description: "You have blocked notifications. Please enable them in your browser settings.",
+          });
+        setRemindersEnabled(false);
+      }
+    } else {
+      setRemindersEnabled(false);
+      handleSave(false); // Also save the disabled state
+    }
+  };
 
   const handleDayToggle = (dayIndex: number) => {
     setSelectedDays(prev => 
@@ -27,20 +117,43 @@ export default function ReminderSettings() {
         : [...prev, dayIndex]
     );
   };
-
-  const handleSave = () => {
-    // This is a mock save. In a real app, you'd save this to a backend or local storage and schedule notifications.
-    toast({
-      title: "Reminders Saved (Demonstration)",
-      description: "Your notification preferences have been updated. Actual notifications are not yet implemented.",
-    });
-  }
+  
+  const handleSave = (enabledState = remindersEnabled) => {
+    if (enabledState && notificationPermission !== 'granted') {
+       toast({
+        variant: "destructive",
+        title: "Cannot Save Reminders",
+        description: "Please enable notifications in your browser to save reminder settings.",
+      });
+      return;
+    }
+    
+    const settings: ReminderSettings = {
+      enabled: enabledState,
+      time: reminderTime,
+      days: selectedDays,
+    };
+    
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY_REMINDERS, JSON.stringify(settings));
+      toast({
+        title: "Reminders Saved",
+        description: enabledState ? `You will be notified at ${reminderTime} on selected days.` : "Your reminder preferences have been updated.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not save your preferences.",
+      });
+    }
+  };
 
   return (
     <Card className="border-0 shadow-none">
       <CardHeader>
         <CardTitle className="font-headline flex items-center gap-2"><Bell />Set Journal Reminders</CardTitle>
-        <CardDescription>Stay consistent with gentle nudges to write. Note: This is a UI demonstration; reminders are not yet active.</CardDescription>
+        <CardDescription>Stay consistent with gentle nudges to write. This uses your browser's notification system.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6 pt-2">
         <div className="flex items-center justify-between rounded-lg border p-4">
@@ -55,7 +168,7 @@ export default function ReminderSettings() {
             <Switch
               id="reminders-switch"
               checked={remindersEnabled}
-              onCheckedChange={setRemindersEnabled}
+              onCheckedChange={handleToggleReminders}
               aria-label="Toggle reminders"
             />
         </div>
@@ -95,7 +208,7 @@ export default function ReminderSettings() {
       </CardContent>
       {remindersEnabled && (
         <CardFooter>
-            <Button onClick={handleSave} className="ml-auto">
+            <Button onClick={() => handleSave()} className="ml-auto">
                 <Save className="mr-2 h-4 w-4" />
                 Save Preferences
             </Button>
