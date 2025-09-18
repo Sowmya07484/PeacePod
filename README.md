@@ -82,29 +82,3 @@ To get a local copy up and running, follow these simple steps.
 
 3.  Open [http://localhost:9002](http://localhost:9002) with your browser to see the result.
 
-## 🚀 Deployment
-
-You can deploy this application to your own hosting provider. Below are instructions for Vercel, a popular platform for deploying Next.js applications.
-
-### Deploying to Vercel
-
-[Vercel](https://vercel.com/) is a cloud platform from the creators of Next.js that makes it easy to deploy Next.js apps.
-
-1.  **Sign up and Import:**
-    *   Create an account on [Vercel](https://vercel.com/).
-    *   From your Vercel dashboard, click "Add New..." -> "Project".
-    *   Import the Git repository where you've stored the PeacePod code.
-
-2.  **Configure Project:**
-    *   Vercel will automatically detect that you are using a Next.js project and configure the build settings for you. You typically do not need to change anything here.
-
-3.  **Add Environment Variables:**
-    *   Before deploying, you need to add your `GEMINI_API_KEY` to Vercel so the AI features will work in production.
-    *   In your project's settings on Vercel, navigate to the **Settings** tab and click on **Environment Variables**.
-    *   Add a new variable:
-        *   **Name:** `GEMINI_API_KEY`
-        *   **Value:** Paste your API key here.
-    *   Ensure the variable is available for all environments (Production, Preview, and Development).
-
-4.  **Deploy:**
-    *   Click the **Deploy** button. Vercel will build and deploy your application. Once finished, you will be given a URL to view your live site.
