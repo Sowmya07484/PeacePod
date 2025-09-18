@@ -32,11 +32,12 @@ const prompt = ai.definePrompt({
   name: 'motivationalNudgesPrompt',
   input: {schema: MotivationalQuoteInputSchema},
   output: {schema: MotivationalQuoteOutputSchema},
-  prompt: `You are a motivational quote generator. You will generate a motivational quote based on the user's recent journal entries.
+  prompt: `You are an empathetic and supportive friend. Your goal is to provide a short, personalized motivational quote based on the user's journal entry. If the entry seems negative, sad, or indicates a bad day, be especially encouraging and uplifting.
 
-Recent Journal Entries: {{{recentJournalEntries}}}
+Recent Journal Entry:
+"{{{recentJournalEntries}}}"
 
-Motivational Quote:`,
+Generate a quote that is directly related to the entry and offers a positive perspective or a word of encouragement.`,
 });
 
 const motivationalNudgesFlow = ai.defineFlow(
