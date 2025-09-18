@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 
-export default function Header() {
+interface HeaderProps {
+  onLogout: () => void;
+}
+
+export default function Header({ onLogout }: HeaderProps) {
   const userAvatar = PlaceHolderImages.find((p) => p.id === "user-avatar")
 
   return (
@@ -58,7 +62,7 @@ export default function Header() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

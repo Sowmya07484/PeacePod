@@ -1,10 +1,43 @@
+"use client";
+
+import { useState, useEffect } from 'react';
 import Dashboard from '@/components/dashboard';
 import Header from '@/components/header';
+import LoginPage from '@/components/login-page';
+
+type User = {
+  name: string;
+  age: number;
+};
 
 export default function Home() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('reflectwell-user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogin = (name: string, age: number) => {
+    const newUser = { name, age };
+    setUser(newUser);
+    localStorage.setItem('reflectwell-user', JSON.stringify(newUser));
+  };
+  
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('reflectwell-user');
+  }
+
+  if (!user) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header />
+      <Header onLogout={handleLogout} />
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <Dashboard />
       </main>
