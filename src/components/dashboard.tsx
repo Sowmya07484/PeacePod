@@ -13,11 +13,13 @@ import MoodEntry from './mood-entry';
 import MotivationalNudges from './motivational-nudges';
 import SettingsPanel from './settings-panel';
 import WelcomeHeader from './welcome-header';
+import { useEncryption } from '@/hooks/use-encryption';
 
 type JournalEntry = {
   mood: string;
   text: string;
   date: Date;
+  isEncrypted?: boolean;
 };
 
 interface DashboardProps {
@@ -47,12 +49,35 @@ const FeatureCard = ({ icon, title, description, children }: { icon: React.React
 export default function Dashboard({ initialMood }: DashboardProps) {
   const [journalText, setJournalText] = useState('');
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const { isEncrypted, encrypt, decrypt } = useEncryption();
 
   const handleSaveEntry = (mood: string, text: string) => {
-    const newEntry = { mood, text, date: new Date() };
+    let newEntry: JournalEntry;
+    if (isEncrypted) {
+      const encryptedText = encrypt(text);
+      newEntry = { mood, text: encryptedText, date: new Date(), isEncrypted: true };
+    } else {
+      newEntry = { mood, text, date: new Date(), isEncrypted: false };
+    }
+    
     setJournalEntries(prev => [newEntry, ...prev]);
     setJournalText(''); // Clear text area after saving
   };
+  
+  const getDecryptedEntry = (entry: JournalEntry) => {
+    if (entry.isEncrypted) {
+        try {
+            const decryptedText = decrypt(entry.text);
+            return decryptedText;
+        } catch (error) {
+            console.error("Decryption failed:", error);
+            return "This content is encrypted and could not be displayed.";
+        }
+    }
+    return entry.text;
+  };
+
+  const latestJournalText = journalText || (journalEntries[0] ? getDecryptedEntry(journalEntries[0]) : '');
   
   return (
     <div className="flex flex-col gap-6">
@@ -87,7 +112,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
           description="AI-powered motivational quotes."
         >
           <MotivationalNudges 
-            recentEntry={journalText || (journalEntries[0]?.text || '')} 
+            recentEntry={latestJournalText} 
             mood={initialMood}
           />
         </FeatureCard>

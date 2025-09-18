@@ -1,16 +1,16 @@
 
 "use client";
 
-import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useEncryption } from "@/hooks/use-encryption";
 import { FileText, ShieldCheck } from "lucide-react";
 
 export default function SettingsPanel() {
-  const [isEncrypted, setIsEncrypted] = useState(false);
+  const { isEncrypted, toggleEncryption } = useEncryption();
 
   return (
     <Card className="border-0 shadow-none">
@@ -32,7 +32,7 @@ export default function SettingsPanel() {
             <Switch
               id="encryption-switch"
               checked={isEncrypted}
-              onCheckedChange={setIsEncrypted}
+              onCheckedChange={toggleEncryption}
               aria-label="Toggle local encryption"
             />
         </div>
