@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
@@ -8,9 +9,55 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useEncryption } from "@/hooks/use-encryption";
 import { FileText, ShieldCheck } from "lucide-react";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
-export default function SettingsPanel() {
+type JournalEntry = {
+  mood: string;
+  text: string;
+  date: Date;
+  isEncrypted?: boolean;
+};
+
+interface SettingsPanelProps {
+  entries: JournalEntry[];
+  getDecryptedText: (entry: JournalEntry) => string;
+}
+
+export default function SettingsPanel({ entries, getDecryptedText }: SettingsPanelProps) {
   const { isEncrypted, toggleEncryption } = useEncryption();
+  const exportContentRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = async () => {
+    const content = exportContentRef.current;
+    if (!content) return;
+
+    // Temporarily make the content visible for capturing
+    content.style.position = 'absolute';
+    content.style.left = '-9999px';
+    content.style.display = 'block';
+    
+    const canvas = await html2canvas(content, {
+      scale: 2, // Higher scale for better quality
+      useCORS: true,
+      backgroundColor: null,
+    });
+    
+    // Hide the content again
+    content.style.position = '';
+    content.style.left = '';
+    content.style.display = '';
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'px',
+      format: [canvas.width, canvas.height],
+    });
+
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save('peacepod-journal.pdf');
+  };
 
   return (
     <Card className="border-0 shadow-none">
@@ -46,24 +93,22 @@ export default function SettingsPanel() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Export Preview</DialogTitle>
+              <DialogTitle>Export Journal</DialogTitle>
               <DialogDescription>
-                This is a preview of your journal export. Actual export functionality is not implemented.
+                Your journal will be exported as a PDF document.
               </DialogDescription>
             </DialogHeader>
-            <div className="my-4 h-64 overflow-y-auto rounded-md border p-4 bg-secondary/30">
-              <h2 className="font-bold text-lg">My Wellness Journal</h2>
-              <p className="text-sm text-muted-foreground">Generated on {new Date().toLocaleDateString()}</p>
-              <div className="mt-4 space-y-2">
-                <h3 className="font-semibold">Entry: {new Date(Date.now() - 86400000).toLocaleDateString()}</h3>
-                <p className="text-sm">Mood: Happy</p>
-                <p className="text-sm border-l-2 pl-2 border-primary">Today was a great day. I felt productive and happy. I managed to finish all my tasks and even had time to relax and read a book.</p>
-              </div>
-               <div className="mt-4 space-y-2">
-                <h3 className="font-semibold">Entry: {new Date(Date.now() - 2*86400000).toLocaleDateString()}</h3>
-                <p className="text-sm">Mood: Sad</p>
-                <p className="text-sm border-l-2 pl-2 border-primary">Felt a bit down today. Things didn't go as planned at work, but I'm trying to stay positive.</p>
-              </div>
+            <div ref={exportContentRef} className="my-4 h-64 overflow-y-auto rounded-md border p-4 bg-white text-black">
+              <h2 className="font-bold text-lg">My PeacePod Journal</h2>
+              <p className="text-sm text-gray-500">Generated on {new Date().toLocaleDateString()}</p>
+              {entries.map((entry, index) => (
+                <div key={index} className="mt-4 space-y-2">
+                  <h3 className="font-semibold">Entry: {entry.date.toLocaleDateString()}</h3>
+                  <p className="text-sm">Mood: {entry.mood}</p>
+                  <p className="text-sm border-l-2 pl-2 border-primary">{getDecryptedText(entry)}</p>
+                </div>
+              ))}
+              {entries.length === 0 && <p className="text-sm text-center py-8">No entries to export.</p>}
             </div>
             <DialogFooter>
               <DialogClose asChild>
@@ -71,7 +116,7 @@ export default function SettingsPanel() {
                   Close
                 </Button>
               </DialogClose>
-              <Button type="submit">Download PDF</Button>
+              <Button onClick={handleDownloadPdf} disabled={entries.length === 0}>Download PDF</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

@@ -199,7 +199,7 @@ export default function Dashboard({ initialMood }: DashboardProps) {
           title="Settings & Export"
           description="Manage your data and privacy."
         >
-          <SettingsPanel />
+          <SettingsPanel entries={journalEntries} getDecryptedText={getDecryptedEntry} />
         </FeatureCard>
       </div>
     </div>
