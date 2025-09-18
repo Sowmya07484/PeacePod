@@ -18,9 +18,10 @@ const defaultQuotes = [
 
 interface MotivationalNudgesProps {
   recentEntry: string;
+  mood: string;
 }
 
-export default function MotivationalNudges({ recentEntry }: MotivationalNudgesProps) {
+export default function MotivationalNudges({ recentEntry, mood }: MotivationalNudgesProps) {
   const [quotes, setQuotes] = useState<string[]>(defaultQuotes);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -36,7 +37,7 @@ export default function MotivationalNudges({ recentEntry }: MotivationalNudgesPr
     }
 
     startTransition(async () => {
-      const { quote, error } = await getMotivationalQuote(recentEntry);
+      const { quote, error } = await getMotivationalQuote(recentEntry, mood);
       if (error) {
         toast({
           variant: "destructive",

@@ -86,7 +86,10 @@ export default function Dashboard({ initialMood }: DashboardProps) {
           title="Get a Nudge"
           description="AI-powered motivational quotes."
         >
-          <MotivationalNudges recentEntry={journalText || (journalEntries[0]?.text || '')} />
+          <MotivationalNudges 
+            recentEntry={journalText || (journalEntries[0]?.text || '')} 
+            mood={initialMood}
+          />
         </FeatureCard>
 
         <FeatureCard

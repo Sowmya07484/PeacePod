@@ -32,7 +32,7 @@ export default function MoodPromptPage({ onMoodSelect }: MoodPromptPageProps) {
     setSelectedMoodForJournal(mood);
     if (mood === 'frown' || mood === 'annoyed') {
       startTransition(async () => {
-        const { quote } = await getMotivationalQuote("I'm having a bad day.");
+        const { quote } = await getMotivationalQuote("I'm having a bad day.", mood);
         if (quote) {
           setQuote(quote);
           setShowQuoteDialog(true);

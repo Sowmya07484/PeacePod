@@ -3,10 +3,11 @@
 
 import { generateMotivationalQuote } from '@/ai/flows/motivational-nudges';
 
-export async function getMotivationalQuote(journalEntry: string) {
+export async function getMotivationalQuote(journalEntry: string, mood: string) {
   try {
     const result = await generateMotivationalQuote({
       recentJournalEntries: journalEntry,
+      mood: mood,
     });
     return { quote: result.motivationalQuote, error: null };
   } catch (e: any) {
