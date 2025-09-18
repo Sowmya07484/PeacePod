@@ -1,3 +1,6 @@
+
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -8,7 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
+import { useEncryption } from "@/hooks/use-encryption"
+import { ShieldCheck } from "lucide-react"
 
 interface HeaderProps {
   onLogout: () => void;
@@ -16,6 +23,12 @@ interface HeaderProps {
 
 export default function Header({ onLogout }: HeaderProps) {
   const userAvatar = PlaceHolderImages.find((p) => p.id === "user-avatar")
+  const { isEncrypted, toggleEncryption } = useEncryption();
+
+  const handleEncryptionToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toggleEncryption();
+  }
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
@@ -79,6 +92,19 @@ export default function Header({ onLogout }: HeaderProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center justify-between">
+                <Label htmlFor="encryption-switch" className="flex items-center gap-2 cursor-pointer">
+                  <ShieldCheck className="h-4 w-4" />
+                  Encrypt Entries
+                </Label>
+                <Switch
+                  id="encryption-switch"
+                  checked={isEncrypted}
+                  onCheckedChange={toggleEncryption}
+                  aria-label="Toggle local encryption"
+                />
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>

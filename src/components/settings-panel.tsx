@@ -64,28 +64,10 @@ export default function SettingsPanel({ entries, getDecryptedText }: SettingsPan
   return (
     <Card className="border-0 shadow-none">
       <CardHeader>
-        <CardTitle className="font-headline">Privacy & Export</CardTitle>
+        <CardTitle className="font-headline">Settings & Export</CardTitle>
         <CardDescription>Manage your data and privacy settings.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <Label htmlFor="encryption-switch" className="flex items-center gap-2 text-base">
-                <ShieldCheck className="h-5 w-5 text-primary" />
-                Local Encryption
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Secure your entries on this device.
-              </p>
-            </div>
-            <Switch
-              id="encryption-switch"
-              checked={isEncrypted}
-              onCheckedChange={toggleEncryption}
-              aria-label="Toggle local encryption"
-            />
-        </div>
-
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" className="w-full">
